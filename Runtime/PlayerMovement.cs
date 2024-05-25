@@ -1,6 +1,6 @@
 /*
 	Created by @DawnosaurDev at youtube.com/c/DawnosaurStudios
-	Thanks so much for checking this out and I hope you find it helpful! 
+	Thanks so much for checking this out and I hope you find it helpful!
 	If you have any further queries, questions or feedback feel free to reach out on my twitter or leave a comment on youtube :D
 
 	Feel free to use this in your own games, and I'd love to see anything you make!
@@ -13,10 +13,10 @@ public class PlayerMovement : MonoBehaviour
 {
 	//Scriptable object which holds all the player's movement parameters. If you don't want to use it
 	//just paste in all the parameters, though you will need to manuly change all references in this script
-	public PlayerData Data;
+	public SOPlayerMove2D Data;
 
 	#region COMPONENTS
-    public Rigidbody2D RB { get; private set; }
+	public Rigidbody2D RB { get; private set; }
 	//Script to handle all player animations, all references can be safely removed if you're importing into your own project.
 	public PlayerAnimator AnimHandler { get; private set; }
 	#endregion
@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
 	#region CHECK PARAMETERS
 	//Set all of these up in the inspector
-	[Header("Checks")] 
+	[Header("Checks")]
 	[SerializeField] private Transform _groundCheckPoint;
 	//Size of groundCheck depends on the size of your character generally you want them slightly small than width (for ground) and height (for the wall check)
 	[SerializeField] private Vector2 _groundCheckSize = new Vector2(0.49f, 0.03f);
@@ -70,14 +70,14 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private Transform _frontWallCheckPoint;
 	[SerializeField] private Transform _backWallCheckPoint;
 	[SerializeField] private Vector2 _wallCheckSize = new Vector2(0.5f, 1f);
-    #endregion
+	#endregion
 
-    #region LAYERS & TAGS
-    [Header("Layers & Tags")]
+	#region LAYERS & TAGS
+	[Header("Layers & Tags")]
 	[SerializeField] private LayerMask _groundLayer;
 	#endregion
 
-    private void Awake()
+	private void Awake()
 	{
 		RB = GetComponent<Rigidbody2D>();
 		AnimHandler = GetComponent<PlayerAnimator>();
@@ -91,8 +91,8 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Update()
 	{
-        #region TIMERS
-        LastOnGroundTime -= Time.deltaTime;
+		#region TIMERS
+		LastOnGroundTime -= Time.deltaTime;
 		LastOnWallTime -= Time.deltaTime;
 		LastOnWallRightTime -= Time.deltaTime;
 		LastOnWallLeftTime -= Time.deltaTime;
@@ -108,10 +108,10 @@ public class PlayerMovement : MonoBehaviour
 		if (_moveInput.x != 0)
 			CheckDirectionToFace(_moveInput.x > 0);
 
-		if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.J))
-        {
+		if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.J))
+		{
 			OnJumpInput();
-        }
+		}
 
 		if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.C) || Input.GetKeyUp(KeyCode.J))
 		{
@@ -130,13 +130,13 @@ public class PlayerMovement : MonoBehaviour
 			//Ground Check
 			if (Physics2D.OverlapBox(_groundCheckPoint.position, _groundCheckSize, 0, _groundLayer)) //checks if set box overlaps with ground
 			{
-				if(LastOnGroundTime < -0.1f)
-                {
+				if (LastOnGroundTime < -0.1f)
+				{
 					AnimHandler.justLanded = true;
-                }
+				}
 
 				LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
-            }		
+			}
 
 			//Right Wall Check
 			if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)
@@ -167,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
-        {
+		{
 			_isJumpCut = false;
 
 			_isJumpFalling = false;
@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
 		if (CanDash() && LastPressedDashTime > 0)
 		{
 			//Freeze game for split second. Adds juiciness and a bit of forgiveness over directional input
-			Sleep(Data.dashSleepTime); 
+			Sleep(Data.dashSleepTime);
 
 			//If not direction pressed, dash forward
 			if (_moveInput != Vector2.zero)
@@ -276,9 +276,9 @@ public class PlayerMovement : MonoBehaviour
 			SetGravityScale(0);
 		}
 		#endregion
-    }
+	}
 
-    private void FixedUpdate()
+	private void FixedUpdate()
 	{
 		//Handle Run
 		if (!IsDashing)
@@ -296,11 +296,11 @@ public class PlayerMovement : MonoBehaviour
 		//Handle Slide
 		if (IsSliding)
 			Slide();
-    }
+	}
 
-    #region INPUT CALLBACKS
+	#region INPUT CALLBACKS
 	//Methods which whandle input detected in Update()
-    public void OnJumpInput()
+	public void OnJumpInput()
 	{
 		LastPressedJumpTime = Data.jumpInputBufferTime;
 	}
@@ -315,33 +315,33 @@ public class PlayerMovement : MonoBehaviour
 	{
 		LastPressedDashTime = Data.dashInputBufferTime;
 	}
-    #endregion
+	#endregion
 
-    #region GENERAL METHODS
-    public void SetGravityScale(float scale)
+	#region GENERAL METHODS
+	public void SetGravityScale(float scale)
 	{
 		RB.gravityScale = scale;
 	}
 
 	private void Sleep(float duration)
-    {
+	{
 		//Method used so we don't need to call StartCoroutine everywhere
 		//nameof() notation means we don't need to input a string directly.
 		//Removes chance of spelling mistakes and will improve error messages if any
 		StartCoroutine(nameof(PerformSleep), duration);
-    }
+	}
 
 	private IEnumerator PerformSleep(float duration)
-    {
+	{
 		Time.timeScale = 0;
-		yield return new WaitForSecondsRealtime(duration); //Must be Realtime since timeScale with be 0 
+		yield return new WaitForSecondsRealtime(duration); //Must be Realtime since timeScale with be 0
 		Time.timeScale = 1;
 	}
-    #endregion
+	#endregion
 
 	//MOVEMENT METHODS
-    #region RUN METHODS
-    private void Run(float lerpAmount)
+	#region RUN METHODS
+	private void Run(float lerpAmount)
 	{
 		//Calculate the direction we want to move in and our desired velocity
 		float targetSpeed = _moveInput.x * Data.runMaxSpeed;
@@ -351,7 +351,7 @@ public class PlayerMovement : MonoBehaviour
 		#region Calculate AccelRate
 		float accelRate;
 
-		//Gets an acceleration value based on if we are accelerating (includes turning) 
+		//Gets an acceleration value based on if we are accelerating (includes turning)
 		//or trying to decelerate (stop). As well as applying a multiplier if we're air borne.
 		if (LastOnGroundTime > 0)
 			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? Data.runAccelAmount : Data.runDeccelAmount;
@@ -370,11 +370,11 @@ public class PlayerMovement : MonoBehaviour
 
 		#region Conserve Momentum
 		//We won't slow the player down if they are moving in their desired direction but at a greater speed than their maxSpeed
-		if(Data.doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
+		if (Data.doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
 		{
 			//Prevent any deceleration from happening, or in other words conserve are current momentum
 			//You could experiment with allowing for the player to slightly increae their speed whilst in this "state"
-			accelRate = 0; 
+			accelRate = 0;
 		}
 		#endregion
 
@@ -396,17 +396,17 @@ public class PlayerMovement : MonoBehaviour
 
 	private void Turn()
 	{
-		//stores scale and flips the player along the x axis, 
-		Vector3 scale = transform.localScale; 
+		//stores scale and flips the player along the x axis,
+		Vector3 scale = transform.localScale;
 		scale.x *= -1;
 		transform.localScale = scale;
 
 		IsFacingRight = !IsFacingRight;
 	}
-    #endregion
+	#endregion
 
-    #region JUMP METHODS
-    private void Jump()
+	#region JUMP METHODS
+	private void Jump()
 	{
 		//Ensures we can't call Jump multiple times from one press
 		LastPressedJumpTime = 0;
@@ -414,7 +414,7 @@ public class PlayerMovement : MonoBehaviour
 
 		#region Perform Jump
 		//We increase the force applied if we are falling
-		//This means we'll always feel like we jump the same amount 
+		//This means we'll always feel like we jump the same amount
 		//(setting the player's Y velocity to 0 beforehand will likely work the same, but I find this more elegant :D)
 		float force = Data.jumpForce;
 		if (RB.velocity.y < 0)
@@ -470,7 +470,7 @@ public class PlayerMovement : MonoBehaviour
 		while (Time.time - startTime <= Data.dashAttackTime)
 		{
 			RB.velocity = dir.normalized * Data.dashSpeed;
-			//Pauses the loop until the next frame, creating something of a Update loop. 
+			//Pauses the loop until the next frame, creating something of a Update loop.
 			//This is a cleaner implementation opposed to multiple timers and this coroutine approach is actually what is used in Celeste :D
 			yield return null;
 		}
@@ -507,46 +507,46 @@ public class PlayerMovement : MonoBehaviour
 	private void Slide()
 	{
 		//We remove the remaining upwards Impulse to prevent upwards sliding
-		if(RB.velocity.y > 0)
+		if (RB.velocity.y > 0)
 		{
-		    RB.AddForce(-RB.velocity.y * Vector2.up,ForceMode2D.Impulse);
+			RB.AddForce(-RB.velocity.y * Vector2.up, ForceMode2D.Impulse);
 		}
-	
+
 		//Works the same as the Run but only in the y-axis
 		//THis seems to work fine, buit maybe you'll find a better way to implement a slide into this system
-		float speedDif = Data.slideSpeed - RB.velocity.y;	
+		float speedDif = Data.slideSpeed - RB.velocity.y;
 		float movement = speedDif * Data.slideAccel;
 		//So, we clamp the movement here to prevent any over corrections (these aren't noticeable in the Run)
 		//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidbodies.
-		movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+		movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
 
 		RB.AddForce(movement * Vector2.up);
 	}
-    #endregion
+	#endregion
 
 
-    #region CHECK METHODS
-    public void CheckDirectionToFace(bool isMovingRight)
+	#region CHECK METHODS
+	public void CheckDirectionToFace(bool isMovingRight)
 	{
 		if (isMovingRight != IsFacingRight)
 			Turn();
 	}
 
-    private bool CanJump()
-    {
+	private bool CanJump()
+	{
 		return LastOnGroundTime > 0 && !IsJumping;
-    }
+	}
 
 	private bool CanWallJump()
-    {
+	{
 		return LastPressedJumpTime > 0 && LastOnWallTime > 0 && LastOnGroundTime <= 0 && (!IsWallJumping ||
 			 (LastOnWallRightTime > 0 && _lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && _lastWallJumpDir == -1));
 	}
 
 	private bool CanJumpCut()
-    {
+	{
 		return IsJumping && RB.velocity.y > 0;
-    }
+	}
 
 	private bool CanWallJumpCut()
 	{
@@ -564,25 +564,25 @@ public class PlayerMovement : MonoBehaviour
 	}
 
 	public bool CanSlide()
-    {
+	{
 		if (LastOnWallTime > 0 && !IsJumping && !IsWallJumping && !IsDashing && LastOnGroundTime <= 0)
 			return true;
 		else
 			return false;
 	}
-    #endregion
+	#endregion
 
 
-    #region EDITOR METHODS
-    private void OnDrawGizmosSelected()
-    {
+	#region EDITOR METHODS
+	private void OnDrawGizmosSelected()
+	{
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireCube(_groundCheckPoint.position, _groundCheckSize);
 		Gizmos.color = Color.blue;
 		Gizmos.DrawWireCube(_frontWallCheckPoint.position, _wallCheckSize);
 		Gizmos.DrawWireCube(_backWallCheckPoint.position, _wallCheckSize);
 	}
-    #endregion
+	#endregion
 }
 
 // created by Dawnosaur :D
