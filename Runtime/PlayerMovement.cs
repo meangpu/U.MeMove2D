@@ -2,22 +2,20 @@
 	Created by @DawnosaurDev at youtube.com/c/DawnosaurStudios
 	Thanks so much for checking this out and I hope you find it helpful!
 	If you have any further queries, questions or feedback feel free to reach out on my twitter or leave a comment on youtube :D
-
 	Feel free to use this in your own games, and I'd love to see anything you make!
  */
 
 using System.Collections;
+using Meangpu;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	//Scriptable object which holds all the player's movement parameters. If you don't want to use it
-	//just paste in all the parameters, though you will need to manuly change all references in this script
+	[Expandable]
 	public SOPlayerMove2D Data;
 
 	#region COMPONENTS
 	public Rigidbody2D RB { get; private set; }
-	//Script to handle all player animations, all references can be safely removed if you're importing into your own project.
 	public PlayerAnimator AnimHandler { get; private set; }
 	#endregion
 
