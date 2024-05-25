@@ -4,7 +4,6 @@
   "unity": "2021.3",
   "displayName": "MeMove2D",
   "description": "a 2d platform package",
-  "type": "template",
   "author": {
     "name": "meangpu",
     "url": "https://github.com/meangpu"
