@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,6 +9,7 @@ namespace Meangpu.Move2D
 	{
 		[Expandable]
 		public SOPlayerMove2D Data;
+		[Header("Input")]
 		[SerializeField] InputActionReference _moveInputAction;
 		[SerializeField] InputActionReference _jumpInputAction;
 		[SerializeField] InputActionReference _dashInputAction;
@@ -76,9 +76,9 @@ namespace Meangpu.Move2D
 
 			_dashInputAction.action.performed += OnDashInput;
 
-
 			_jumpInputAction.action.Enable();
 			_moveInputAction.action.Enable();
+			_dashInputAction.action.Enable();
 		}
 
 
@@ -89,9 +89,9 @@ namespace Meangpu.Move2D
 
 			_dashInputAction.action.performed -= OnDashInput;
 
-
 			_jumpInputAction.action.Disable();
 			_moveInputAction.action.Disable();
+			_dashInputAction.action.Disable();
 		}
 
 		private void OnDashInput(InputAction.CallbackContext context) => OnDashInput();
@@ -125,13 +125,7 @@ namespace Meangpu.Move2D
 			#region INPUT HANDLER
 			_moveInput = _moveInputAction.action.ReadValue<Vector2>();
 
-			if (_moveInput.x != 0)
-				CheckDirectionToFace(_moveInput.x > 0);
-
-			if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.K))
-			{
-				OnDashInput();
-			}
+			if (_moveInput.x != 0) CheckDirectionToFace(_moveInput.x > 0);
 			#endregion
 
 			#region COLLISION CHECKS
