@@ -124,7 +124,6 @@ namespace Meangpu.Move2D
 
 			#region INPUT HANDLER
 			_moveInput = _moveInputAction.action.ReadValue<Vector2>();
-
 			if (_moveInput.x != 0) CheckDirectionToFace(_moveInput.x > 0);
 			#endregion
 
@@ -147,7 +146,7 @@ namespace Meangpu.Move2D
 						|| (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight)) && !IsWallJumping)
 					LastOnWallRightTime = Data.coyoteTime;
 
-				//Right Wall Check
+				//Left Wall Check
 				if (((Physics2D.OverlapBox(_frontWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && !IsFacingRight)
 					|| (Physics2D.OverlapBox(_backWallCheckPoint.position, _wallCheckSize, 0, _groundLayer) && IsFacingRight)) && !IsWallJumping)
 					LastOnWallLeftTime = Data.coyoteTime;
@@ -161,7 +160,6 @@ namespace Meangpu.Move2D
 			if (IsJumping && RB.velocity.y < 0)
 			{
 				IsJumping = false;
-
 				_isJumpFalling = true;
 			}
 
@@ -173,7 +171,6 @@ namespace Meangpu.Move2D
 			if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)
 			{
 				_isJumpCut = false;
-
 				_isJumpFalling = false;
 			}
 
@@ -217,8 +214,6 @@ namespace Meangpu.Move2D
 					_lastDashDir = _moveInput;
 				else
 					_lastDashDir = IsFacingRight ? Vector2.right : Vector2.left;
-
-
 
 				IsDashing = true;
 				IsJumping = false;
@@ -303,7 +298,7 @@ namespace Meangpu.Move2D
 		}
 
 		#region INPUT CALLBACKS
-		//Methods which whandle input detected in Update()
+		//Methods which handle input detected in Update()
 		public void OnJumpInput()
 		{
 			LastPressedJumpTime = Data.jumpInputBufferTime;
@@ -377,7 +372,7 @@ namespace Meangpu.Move2D
 			if (Data.doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
 			{
 				//Prevent any deceleration from happening, or in other words conserve are current momentum
-				//You could experiment with allowing for the player to slightly increae their speed whilst in this "state"
+				//You could experiment with allowing for the player to slightly increase their speed whilst in this "state"
 				accelRate = 0;
 			}
 			#endregion
@@ -447,7 +442,7 @@ namespace Meangpu.Move2D
 				force.y -= RB.velocity.y;
 
 			//Unlike in the run we want to use the Impulse mode.
-			//The default mode will apply are force instantly ignoring masss
+			//The default mode will apply are force instantly ignoring mass
 			RB.AddForce(force, ForceMode2D.Impulse);
 			#endregion
 		}
@@ -499,7 +494,7 @@ namespace Meangpu.Move2D
 		//Short period before the player is able to dash again
 		private IEnumerator RefillDash(int amount)
 		{
-			//SHoet cooldown, so we can't constantly dash along the ground, again this is the implementation in Celeste, feel free to change it up
+			//Cooldown, so we can't constantly dash along the ground, again this is the implementation in Celeste, feel free to change it up
 			_dashRefilling = true;
 			yield return new WaitForSeconds(Data.dashRefillTime);
 			_dashRefilling = false;
@@ -517,11 +512,11 @@ namespace Meangpu.Move2D
 			}
 
 			//Works the same as the Run but only in the y-axis
-			//THis seems to work fine, buit maybe you'll find a better way to implement a slide into this system
+			//THis seems to work fine, but maybe you'll find a better way to implement a slide into this system
 			float speedDif = Data.slideSpeed - RB.velocity.y;
 			float movement = speedDif * Data.slideAccel;
 			//So, we clamp the movement here to prevent any over corrections (these aren't noticeable in the Run)
-			//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidbodies.
+			//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidBody.
 			movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
 
 			RB.AddForce(movement * Vector2.up);
