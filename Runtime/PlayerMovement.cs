@@ -1,19 +1,18 @@
-/*
-	Created by @DawnosaurDev at youtube.com/c/DawnosaurStudios
-	Thanks so much for checking this out and I hope you find it helpful!
-	If you have any further queries, questions or feedback feel free to reach out on my twitter or leave a comment on youtube :D
-	Feel free to use this in your own games, and I'd love to see anything you make!
- */
-
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Meangpu.Move2D
 {
+	// 	Original Created by @DawnosaurDev at youtube.com/c/DawnosaurStudios from https://github.com/DawnosaurDev/platformer-movement
 	public class PlayerMovement : MonoBehaviour
 	{
 		[Expandable]
 		public SOPlayerMove2D Data;
+		[SerializeField] InputActionReference _moveInputAction;
+		[SerializeField] InputActionReference _jumpInputAction;
+		[SerializeField] InputActionReference _dashInputAction;
 
 		#region COMPONENTS
 		public Rigidbody2D RB { get; private set; }
@@ -21,9 +20,6 @@ namespace Meangpu.Move2D
 		#endregion
 
 		#region STATE PARAMETERS
-		//Variables control the various actions the player can perform at any time.
-		//These are fields which can are public allowing for other scripts to read them
-		//but can only be privately written to.
 		public bool IsFacingRight { get; private set; }
 		public bool IsJumping { get; private set; }
 		public bool IsWallJumping { get; private set; }
@@ -36,15 +32,12 @@ namespace Meangpu.Move2D
 		public float LastOnWallRightTime { get; private set; }
 		public float LastOnWallLeftTime { get; private set; }
 
-		//Jump
 		private bool _isJumpCut;
 		private bool _isJumpFalling;
 
-		//Wall Jump
 		private float _wallJumpStartTime;
 		private int _lastWallJumpDir;
 
-		//Dash
 		private int _dashesLeft;
 		private bool _dashRefilling;
 		private Vector2 _lastDashDir;
@@ -76,6 +69,35 @@ namespace Meangpu.Move2D
 		[SerializeField] private LayerMask _groundLayer;
 		#endregion
 
+		void OnEnable()
+		{
+			_jumpInputAction.action.started += OnJumpInput;
+			_jumpInputAction.action.canceled += OnJumpUpInput;
+
+			_dashInputAction.action.performed += OnDashInput;
+
+
+			_jumpInputAction.action.Enable();
+			_moveInputAction.action.Enable();
+		}
+
+
+		void OnDisable()
+		{
+			_jumpInputAction.action.started -= OnJumpInput;
+			_jumpInputAction.action.canceled -= OnJumpUpInput;
+
+			_dashInputAction.action.performed -= OnDashInput;
+
+
+			_jumpInputAction.action.Disable();
+			_moveInputAction.action.Disable();
+		}
+
+		private void OnDashInput(InputAction.CallbackContext context) => OnDashInput();
+		private void OnJumpUpInput(InputAction.CallbackContext context) => OnJumpUpInput();
+		private void OnJumpInput(InputAction.CallbackContext context) => OnJumpInput();
+
 		private void Awake()
 		{
 			RB = GetComponent<Rigidbody2D>();
@@ -101,21 +123,10 @@ namespace Meangpu.Move2D
 			#endregion
 
 			#region INPUT HANDLER
-			_moveInput.x = Input.GetAxisRaw("Horizontal");
-			_moveInput.y = Input.GetAxisRaw("Vertical");
+			_moveInput = _moveInputAction.action.ReadValue<Vector2>();
 
 			if (_moveInput.x != 0)
 				CheckDirectionToFace(_moveInput.x > 0);
-
-			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.J))
-			{
-				OnJumpInput();
-			}
-
-			if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.C) || Input.GetKeyUp(KeyCode.J))
-			{
-				OnJumpUpInput();
-			}
 
 			if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.K))
 			{
