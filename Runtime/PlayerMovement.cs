@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
 	#region STATE PARAMETERS
 	//Variables control the various actions the player can perform at any time.
-	//These are fields which can are public allowing for other sctipts to read them
+	//These are fields which can are public allowing for other scripts to read them
 	//but can only be privately written to.
 	public bool IsFacingRight { get; private set; }
 	public bool IsJumping { get; private set; }
