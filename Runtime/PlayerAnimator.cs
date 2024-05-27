@@ -76,7 +76,7 @@ namespace Meangpu.Move2D
                 anim.SetTrigger("Jump");
                 // GameObject obj = Instantiate(jumpFX, transform.position - (Vector3.up * transform.localScale.y / 2), Quaternion.Euler(-90, 0, 0));
                 // Destroy(obj, 1);
-                // startedJumping = false;
+                startedJumping = false;
                 return;
             }
 

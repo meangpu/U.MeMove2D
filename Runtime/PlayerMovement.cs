@@ -74,7 +74,7 @@ namespace Meangpu.Move2D
 			_jumpInputAction.action.started += OnJumpInput;
 			_jumpInputAction.action.canceled += OnJumpUpInput;
 
-			_dashInputAction.action.performed += OnDashInput;
+			_dashInputAction.action.started += OnDashInput;
 
 			_jumpInputAction.action.Enable();
 			_moveInputAction.action.Enable();
@@ -87,7 +87,7 @@ namespace Meangpu.Move2D
 			_jumpInputAction.action.started -= OnJumpInput;
 			_jumpInputAction.action.canceled -= OnJumpUpInput;
 
-			_dashInputAction.action.performed -= OnDashInput;
+			_dashInputAction.action.started -= OnDashInput;
 
 			_jumpInputAction.action.Disable();
 			_moveInputAction.action.Disable();
