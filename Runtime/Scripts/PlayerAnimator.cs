@@ -12,8 +12,8 @@ namespace Meangpu.Move2D
         // todo  change to use me system for animation so anim
 
         [Header("Movement Tilt")]
-        [SerializeField] private float maxTilt;
-        [SerializeField][Range(0, 1)] private float tiltSpeed;
+        [SerializeField] private float maxTilt = 20;
+        [SerializeField][Range(0, 1)] private float tiltSpeed = .08f;
 
         [Header("Particle FX")]
         // todo change fx to use particle system play
