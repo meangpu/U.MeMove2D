@@ -43,11 +43,11 @@ MonoBehaviour:
   coyoteTime: 0.1
   jumpInputBufferTime: 0.1
   dashAmount: 2
-  dashSpeed: 40
+  dashSpeed: 65
   dashSleepTime: 0.02
-  dashAttackTime: 0.1
+  dashAttackTime: 0.08
   dashEndTime: 0.1
-  dashEndSpeed: {x: 15, y: 15}
+  dashEndSpeed: {x: 20, y: 20}
   dashEndRunLerp: 0.5
   dashRefillTime: 0.1
   dashInputBufferTime: 0.1

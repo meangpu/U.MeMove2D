@@ -9,14 +9,16 @@ namespace Meangpu.Move2D
         private SpriteRenderer spriteRend;
 
         // private DemoManager demoManager;
+        // todo  change to use me system for animation so anim
 
         [Header("Movement Tilt")]
         [SerializeField] private float maxTilt;
         [SerializeField][Range(0, 1)] private float tiltSpeed;
 
         [Header("Particle FX")]
-        [SerializeField] private GameObject jumpFX;
-        [SerializeField] private GameObject landFX;
+        // todo change fx to use particle system play
+        // [SerializeField] private GameObject jumpFX;
+        // [SerializeField] private GameObject landFX;
         private ParticleSystem _jumpParticle;
         private ParticleSystem _landParticle;
 
@@ -33,8 +35,8 @@ namespace Meangpu.Move2D
 
             // demoManager = FindObjectOfType<DemoManager>();
 
-            _jumpParticle = jumpFX.GetComponent<ParticleSystem>();
-            _landParticle = landFX.GetComponent<ParticleSystem>();
+            // _jumpParticle = jumpFX.GetComponent<ParticleSystem>();
+            // _landParticle = landFX.GetComponent<ParticleSystem>();
         }
 
         private void LateUpdate()
@@ -61,9 +63,9 @@ namespace Meangpu.Move2D
 
             CheckAnimationState();
 
-            ParticleSystem.MainModule jumpPSettings = _jumpParticle.main;
+            // ParticleSystem.MainModule jumpPSettings = _jumpParticle.main;
             // jumpPSettings.startColor = new ParticleSystem.MinMaxGradient(demoManager.SceneData.foregroundColor);
-            ParticleSystem.MainModule landPSettings = _landParticle.main;
+            // ParticleSystem.MainModule landPSettings = _landParticle.main;
             // landPSettings.startColor = new ParticleSystem.MinMaxGradient(demoManager.SceneData.foregroundColor);
         }
 
@@ -72,17 +74,17 @@ namespace Meangpu.Move2D
             if (startedJumping)
             {
                 anim.SetTrigger("Jump");
-                GameObject obj = Instantiate(jumpFX, transform.position - (Vector3.up * transform.localScale.y / 2), Quaternion.Euler(-90, 0, 0));
-                Destroy(obj, 1);
-                startedJumping = false;
+                // GameObject obj = Instantiate(jumpFX, transform.position - (Vector3.up * transform.localScale.y / 2), Quaternion.Euler(-90, 0, 0));
+                // Destroy(obj, 1);
+                // startedJumping = false;
                 return;
             }
 
             if (justLanded)
             {
                 anim.SetTrigger("Land");
-                GameObject obj = Instantiate(landFX, transform.position - (Vector3.up * transform.localScale.y / 1.5f), Quaternion.Euler(-90, 0, 0));
-                Destroy(obj, 1);
+                // GameObject obj = Instantiate(landFX, transform.position - (Vector3.up * transform.localScale.y / 1.5f), Quaternion.Euler(-90, 0, 0));
+                // Destroy(obj, 1);
                 justLanded = false;
                 return;
             }
