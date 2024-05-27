@@ -1,0 +1,17 @@
+{
+    "name": "Meangpu.Move2D",
+    "rootNamespace": "",
+    "references": [
+        "GUID:3d59d1e925635174b99d0aae53af3aac",
+        "GUID:75469ad4d38634e559750d17036d5f7c"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
