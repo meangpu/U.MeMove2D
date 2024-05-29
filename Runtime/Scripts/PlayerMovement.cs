@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Meangpu.Move2D
@@ -68,6 +69,12 @@ namespace Meangpu.Move2D
 		[Header("Layers & Tags")]
 		[SerializeField] private LayerMask _groundLayer;
 		#endregion
+
+		[Header("Fx")]
+		[SerializeField] DashGhostFx _dashFx;
+		[Header("Event")]
+		[SerializeField] UnityEvent _onDashStart;
+		[SerializeField] UnityEvent _onDashEnd;
 
 		void OnEnable()
 		{
@@ -465,6 +472,13 @@ namespace Meangpu.Move2D
 
 			SetGravityScale(0);
 
+			// fx
+			if (_dashFx != null)
+			{
+				_dashFx?.ShowGhost();
+			}
+			_onDashStart?.Invoke();
+
 			//We keep the player's velocity at the dash speed during the "attack" phase (in celeste the first 0.15s)
 			while (Time.time - startTime <= Data.dashAttackTime)
 			{
@@ -489,6 +503,7 @@ namespace Meangpu.Move2D
 
 			//Dash over
 			IsDashing = false;
+			_onDashEnd?.Invoke();
 		}
 
 		//Short period before the player is able to dash again
