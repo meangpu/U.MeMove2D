@@ -15,9 +15,11 @@ namespace Meangpu.Move2D
         [Header("Particle FX")]
         [SerializeField] private ParticleSystem _jumpFX;
         [SerializeField] private ParticleSystem _landFX;
+        [SerializeField] bool _isUseDashAnim;
 
         public bool StartedJumping { private get; set; }
         public bool JustLanded { private get; set; }
+        public bool JustDash { private get; set; }
 
         private void Start()
         {
@@ -66,6 +68,13 @@ namespace Meangpu.Move2D
                 _anim.SetTrigger("Land");
                 _landFX?.Play();
                 JustLanded = false;
+                return;
+            }
+
+            if (JustDash && _isUseDashAnim)
+            {
+                _anim.SetTrigger("Dash");
+                JustDash = false;
                 return;
             }
 

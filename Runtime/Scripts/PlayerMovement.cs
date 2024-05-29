@@ -475,6 +475,8 @@ namespace Meangpu.Move2D
 
 			SetGravityScale(0);
 
+
+			AnimHandler.JustDash = true;
 			// fx
 			if (_dashFx != null)
 			{
