@@ -15,6 +15,7 @@ namespace Meangpu.Move2D
         [Header("Particle FX")]
         [SerializeField] private ParticleSystem _jumpFX;
         [SerializeField] private ParticleSystem _landFX;
+        [Header("Setting")]
         [SerializeField] bool _isUseDashAnim;
 
         public bool StartedJumping { private get; set; }

@@ -221,6 +221,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _onJumpStart:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8970431652649124514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,6 +240,7 @@ MonoBehaviour:
   _tiltSpeed: 0.08
   _jumpFX: {fileID: 2398744646102139534}
   _landFX: {fileID: 1483769295802136372}
+  _isUseDashAnim: 0
 --- !u!61 &5986735528375395933
 BoxCollider2D:
   m_ObjectHideFlags: 0
