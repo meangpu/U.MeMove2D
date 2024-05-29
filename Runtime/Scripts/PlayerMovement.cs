@@ -135,7 +135,7 @@ namespace Meangpu.Move2D
 				{
 					if (LastOnGroundTime < -0.1f)
 					{
-						AnimHandler.justLanded = true;
+						AnimHandler.JustLanded = true;
 					}
 
 					LastOnGroundTime = Data.coyoteTime; //if so sets the lastGrounded to coyoteTime
@@ -185,7 +185,7 @@ namespace Meangpu.Move2D
 					_isJumpFalling = false;
 					Jump();
 
-					AnimHandler.startedJumping = true;
+					AnimHandler.StartedJumping = true;
 				}
 				//WALL JUMP
 				else if (CanWallJump() && LastPressedJumpTime > 0)

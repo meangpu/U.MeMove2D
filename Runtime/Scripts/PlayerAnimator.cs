@@ -4,39 +4,26 @@ namespace Meangpu.Move2D
 {
     public class PlayerAnimator : MonoBehaviour
     {
-        private PlayerMovement mov;
-        private Animator anim;
-        private SpriteRenderer spriteRend;
-
-        // private DemoManager demoManager;
-        // todo  change to use me system for animation so anim
+        private PlayerMovement _moveScpt;
+        private Animator _anim;
+        private SpriteRenderer _spriteRend;
 
         [Header("Movement Tilt")]
-        [SerializeField] private float maxTilt = 20;
-        [SerializeField][Range(0, 1)] private float tiltSpeed = .08f;
+        [SerializeField] private float _maxTilt = 20;
+        [SerializeField][Range(0, 1)] private float _tiltSpeed = .08f;
 
         [Header("Particle FX")]
-        // todo change fx to use particle system play
-        // [SerializeField] private GameObject jumpFX;
-        // [SerializeField] private GameObject landFX;
-        private ParticleSystem _jumpParticle;
-        private ParticleSystem _landParticle;
+        [SerializeField] private ParticleSystem _jumpFX;
+        [SerializeField] private ParticleSystem _landFX;
 
-        public bool startedJumping { private get; set; }
-        public bool justLanded { private get; set; }
-
-        public float currentVelY;
+        public bool StartedJumping { private get; set; }
+        public bool JustLanded { private get; set; }
 
         private void Start()
         {
-            mov = GetComponent<PlayerMovement>();
-            spriteRend = GetComponentInChildren<SpriteRenderer>();
-            anim = spriteRend.GetComponent<Animator>();
-
-            // demoManager = FindObjectOfType<DemoManager>();
-
-            // _jumpParticle = jumpFX.GetComponent<ParticleSystem>();
-            // _landParticle = landFX.GetComponent<ParticleSystem>();
+            _moveScpt = GetComponent<PlayerMovement>();
+            _spriteRend = GetComponentInChildren<SpriteRenderer>();
+            _anim = _spriteRend.GetComponent<Animator>();
         }
 
         private void LateUpdate()
@@ -46,50 +33,43 @@ namespace Meangpu.Move2D
 
             int mult = -1;
 
-            if (mov.IsSliding)
+            if (_moveScpt.IsSliding)
             {
                 tiltProgress = 0.25f;
             }
             else
             {
-                tiltProgress = Mathf.InverseLerp(-mov.Data.runMaxSpeed, mov.Data.runMaxSpeed, mov.RB.velocity.x);
-                mult = mov.IsFacingRight ? 1 : -1;
+                tiltProgress = Mathf.InverseLerp(-_moveScpt.Data.runMaxSpeed, _moveScpt.Data.runMaxSpeed, _moveScpt.RB.velocity.x);
+                mult = _moveScpt.IsFacingRight ? 1 : -1;
             }
 
-            float newRot = (tiltProgress * maxTilt * 2) - maxTilt;
-            float rot = Mathf.LerpAngle(spriteRend.transform.localRotation.eulerAngles.z * mult, newRot, tiltSpeed);
-            spriteRend.transform.localRotation = Quaternion.Euler(0, 0, rot * mult);
+            float newRot = (tiltProgress * _maxTilt * 2) - _maxTilt;
+            float rot = Mathf.LerpAngle(_spriteRend.transform.localRotation.eulerAngles.z * mult, newRot, _tiltSpeed);
+            _spriteRend.transform.localRotation = Quaternion.Euler(0, 0, rot * mult);
             #endregion
 
             CheckAnimationState();
-
-            // ParticleSystem.MainModule jumpPSettings = _jumpParticle.main;
-            // jumpPSettings.startColor = new ParticleSystem.MinMaxGradient(demoManager.SceneData.foregroundColor);
-            // ParticleSystem.MainModule landPSettings = _landParticle.main;
-            // landPSettings.startColor = new ParticleSystem.MinMaxGradient(demoManager.SceneData.foregroundColor);
         }
 
         private void CheckAnimationState()
         {
-            if (startedJumping)
+            if (StartedJumping)
             {
-                anim.SetTrigger("Jump");
-                // GameObject obj = Instantiate(jumpFX, transform.position - (Vector3.up * transform.localScale.y / 2), Quaternion.Euler(-90, 0, 0));
-                // Destroy(obj, 1);
-                startedJumping = false;
+                _anim.SetTrigger("Jump");
+                _jumpFX?.Play();
+                StartedJumping = false;
                 return;
             }
 
-            if (justLanded)
+            if (JustLanded)
             {
-                anim.SetTrigger("Land");
-                // GameObject obj = Instantiate(landFX, transform.position - (Vector3.up * transform.localScale.y / 1.5f), Quaternion.Euler(-90, 0, 0));
-                // Destroy(obj, 1);
-                justLanded = false;
+                _anim.SetTrigger("Land");
+                _landFX?.Play();
+                JustLanded = false;
                 return;
             }
 
-            anim.SetFloat("Vel Y", mov.RB.velocity.y);
+            _anim.SetFloat("Vel Y", _moveScpt.RB.velocity.y);
         }
     }
 }
