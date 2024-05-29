@@ -75,6 +75,8 @@ namespace Meangpu.Move2D
 		[Header("Event")]
 		[SerializeField] UnityEvent _onDashStart;
 		[SerializeField] UnityEvent _onDashEnd;
+		[Header("EventJump")]
+		[SerializeField] UnityEvent _onJumpStart;
 
 		void OnEnable()
 		{
@@ -417,6 +419,7 @@ namespace Meangpu.Move2D
 			//Ensures we can't call Jump multiple times from one press
 			LastPressedJumpTime = 0;
 			LastOnGroundTime = 0;
+			_onJumpStart?.Invoke();
 
 			#region Perform Jump
 			//We increase the force applied if we are falling
