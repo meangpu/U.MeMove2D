@@ -166,7 +166,7 @@ namespace Meangpu.Move2D
 			#endregion
 
 			#region JUMP CHECKS
-			if (IsJumping && RB.velocity.y < 0)
+			if (IsJumping && RB.linearVelocity.y < 0)
 			{
 				IsJumping = false;
 				_isJumpFalling = true;
@@ -248,29 +248,29 @@ namespace Meangpu.Move2D
 				{
 					SetGravityScale(0);
 				}
-				else if (RB.velocity.y < 0 && _moveInput.y < 0)
+				else if (RB.linearVelocity.y < 0 && _moveInput.y < 0)
 				{
 					//Much higher gravity if holding down
 					SetGravityScale(Data.gravityScale * Data.fastFallGravityMult);
 					//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
-					RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFastFallSpeed));
+					RB.linearVelocity = new Vector2(RB.linearVelocity.x, Mathf.Max(RB.linearVelocity.y, -Data.maxFastFallSpeed));
 				}
 				else if (_isJumpCut)
 				{
 					//Higher gravity if jump button released
 					SetGravityScale(Data.gravityScale * Data.jumpCutGravityMult);
-					RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFallSpeed));
+					RB.linearVelocity = new Vector2(RB.linearVelocity.x, Mathf.Max(RB.linearVelocity.y, -Data.maxFallSpeed));
 				}
-				else if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold)
+				else if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
 				{
 					SetGravityScale(Data.gravityScale * Data.jumpHangGravityMult);
 				}
-				else if (RB.velocity.y < 0)
+				else if (RB.linearVelocity.y < 0)
 				{
 					//Higher gravity if falling
 					SetGravityScale(Data.gravityScale * Data.fallGravityMult);
 					//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
-					RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -Data.maxFallSpeed));
+					RB.linearVelocity = new Vector2(RB.linearVelocity.x, Mathf.Max(RB.linearVelocity.y, -Data.maxFallSpeed));
 				}
 				else
 				{
@@ -354,7 +354,7 @@ namespace Meangpu.Move2D
 			//Calculate the direction we want to move in and our desired velocity
 			float targetSpeed = _moveInput.x * Data.runMaxSpeed;
 			//We can reduce are control using Lerp() this smooths changes to are direction and speed
-			targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
+			targetSpeed = Mathf.Lerp(RB.linearVelocity.x, targetSpeed, lerpAmount);
 
 			#region Calculate AccelRate
 			float accelRate;
@@ -369,7 +369,7 @@ namespace Meangpu.Move2D
 
 			#region Add Bonus Jump Apex Acceleration
 			//Increase are acceleration and maxSpeed when at the apex of their jump, makes the jump feel a bit more bouncy, responsive and natural
-			if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.velocity.y) < Data.jumpHangTimeThreshold)
+			if ((IsJumping || IsWallJumping || _isJumpFalling) && Mathf.Abs(RB.linearVelocity.y) < Data.jumpHangTimeThreshold)
 			{
 				accelRate *= Data.jumpHangAccelerationMult;
 				targetSpeed *= Data.jumpHangMaxSpeedMult;
@@ -378,7 +378,7 @@ namespace Meangpu.Move2D
 
 			#region Conserve Momentum
 			//We won't slow the player down if they are moving in their desired direction but at a greater speed than their maxSpeed
-			if (Data.doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
+			if (Data.doConserveMomentum && Mathf.Abs(RB.linearVelocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.linearVelocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
 			{
 				//Prevent any deceleration from happening, or in other words conserve are current momentum
 				//You could experiment with allowing for the player to slightly increase their speed whilst in this "state"
@@ -387,7 +387,7 @@ namespace Meangpu.Move2D
 			#endregion
 
 			//Calculate difference between current velocity and desired velocity
-			float speedDif = targetSpeed - RB.velocity.x;
+			float speedDif = targetSpeed - RB.linearVelocity.x;
 			//Calculate force along x-axis to apply to thr player
 
 			float movement = speedDif * accelRate;
@@ -426,8 +426,8 @@ namespace Meangpu.Move2D
 			//This means we'll always feel like we jump the same amount
 			//(setting the player's Y velocity to 0 beforehand will likely work the same, but I find this more elegant :D)
 			float force = Data.jumpForce;
-			if (RB.velocity.y < 0)
-				force -= RB.velocity.y;
+			if (RB.linearVelocity.y < 0)
+				force -= RB.linearVelocity.y;
 
 			RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 			#endregion
@@ -445,11 +445,11 @@ namespace Meangpu.Move2D
 			Vector2 force = new Vector2(Data.wallJumpForce.x, Data.wallJumpForce.y);
 			force.x *= dir; //apply force in opposite direction of wall
 
-			if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
-				force.x -= RB.velocity.x;
+			if (Mathf.Sign(RB.linearVelocity.x) != Mathf.Sign(force.x))
+				force.x -= RB.linearVelocity.x;
 
-			if (RB.velocity.y < 0) //checks whether player is falling, if so we subtract the velocity.y (counteracting force of gravity). This ensures the player always reaches our desired jump force or greater
-				force.y -= RB.velocity.y;
+			if (RB.linearVelocity.y < 0) //checks whether player is falling, if so we subtract the velocity.y (counteracting force of gravity). This ensures the player always reaches our desired jump force or greater
+				force.y -= RB.linearVelocity.y;
 
 			//Unlike in the run we want to use the Impulse mode.
 			//The default mode will apply are force instantly ignoring mass
@@ -487,7 +487,7 @@ namespace Meangpu.Move2D
 			//We keep the player's velocity at the dash speed during the "attack" phase (in celeste the first 0.15s)
 			while (Time.time - startTime <= Data.dashAttackTime)
 			{
-				RB.velocity = dir.normalized * Data.dashSpeed;
+				RB.linearVelocity = dir.normalized * Data.dashSpeed;
 				//Pauses the loop until the next frame, creating something of a Update loop.
 				//This is a cleaner implementation opposed to multiple timers and this coroutine approach is actually what is used in Celeste :D
 				yield return null;
@@ -499,7 +499,7 @@ namespace Meangpu.Move2D
 
 			//Begins the "end" of our dash where we return some control to the player but still limit run acceleration (see Update() and Run())
 			SetGravityScale(Data.gravityScale);
-			RB.velocity = Data.dashEndSpeed * dir.normalized;
+			RB.linearVelocity = Data.dashEndSpeed * dir.normalized;
 
 			while (Time.time - startTime <= Data.dashEndTime)
 			{
@@ -526,14 +526,14 @@ namespace Meangpu.Move2D
 		private void Slide()
 		{
 			//We remove the remaining upwards Impulse to prevent upwards sliding
-			if (RB.velocity.y > 0)
+			if (RB.linearVelocity.y > 0)
 			{
-				RB.AddForce(-RB.velocity.y * Vector2.up, ForceMode2D.Impulse);
+				RB.AddForce(-RB.linearVelocity.y * Vector2.up, ForceMode2D.Impulse);
 			}
 
 			//Works the same as the Run but only in the y-axis
 			//THis seems to work fine, but maybe you'll find a better way to implement a slide into this system
-			float speedDif = Data.slideSpeed - RB.velocity.y;
+			float speedDif = Data.slideSpeed - RB.linearVelocity.y;
 			float movement = speedDif * Data.slideAccel;
 			//So, we clamp the movement here to prevent any over corrections (these aren't noticeable in the Run)
 			//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidBody.
@@ -564,12 +564,12 @@ namespace Meangpu.Move2D
 
 		private bool CanJumpCut()
 		{
-			return IsJumping && RB.velocity.y > 0;
+			return IsJumping && RB.linearVelocity.y > 0;
 		}
 
 		private bool CanWallJumpCut()
 		{
-			return IsWallJumping && RB.velocity.y > 0;
+			return IsWallJumping && RB.linearVelocity.y > 0;
 		}
 
 		private bool CanDash()

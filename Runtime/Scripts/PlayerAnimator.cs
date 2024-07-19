@@ -42,7 +42,7 @@ namespace Meangpu.Move2D
             }
             else
             {
-                tiltProgress = Mathf.InverseLerp(-_moveScpt.Data.runMaxSpeed, _moveScpt.Data.runMaxSpeed, _moveScpt.RB.velocity.x);
+                tiltProgress = Mathf.InverseLerp(-_moveScpt.Data.runMaxSpeed, _moveScpt.Data.runMaxSpeed, _moveScpt.RB.linearVelocity.x);
                 mult = _moveScpt.IsFacingRight ? 1 : -1;
             }
 
@@ -79,7 +79,7 @@ namespace Meangpu.Move2D
                 return;
             }
 
-            _anim.SetFloat("Vel Y", _moveScpt.RB.velocity.y);
+            _anim.SetFloat("Vel Y", _moveScpt.RB.linearVelocity.y);
         }
     }
 }
