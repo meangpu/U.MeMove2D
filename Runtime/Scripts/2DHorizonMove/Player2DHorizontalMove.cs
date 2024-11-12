@@ -18,6 +18,11 @@ namespace Meangpu
         private float accelerationRate;
         private float decelerationRate;
 
+        bool _isEnable = true;
+
+        public void DisableMovement() => _isEnable = false;
+        public void EnableMovement() => _isEnable = true;
+
         private void Start()
         {
             _horizontalMoveInput.Variable.SetValue(0);
@@ -28,6 +33,7 @@ namespace Meangpu
         private void FixedUpdate()
         {
             if (SettingManager.Instance.IsNowOpenSetting) return;
+            if (!_isEnable) return;
 
             velocityTarget = _horizontalMoveInput * maxSpeed;
             float currentVelocity = _rb.linearVelocityX;
