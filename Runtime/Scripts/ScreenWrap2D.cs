@@ -9,28 +9,27 @@ namespace Meangpu
         {
             public bool enabled;
             public float offset;
-            public float minBound;
-            public float maxBound;
+            public FloatRange boundRange;
         }
 
         [Header("Wrap Settings")]
         [SerializeField] private bool useScreenBounds = true;
+        [SerializeField] SpriteRenderer _objectSize;
+
         [SerializeField]
         private WrapAxis xAxis = new WrapAxis
         {
             enabled = true,
             offset = 0.5f,
-            minBound = -8.5f,
-            maxBound = 8.5f
+            boundRange = new(-5.5f, 5.5f)
         };
 
         [SerializeField]
-        private WrapAxis yAxis = new WrapAxis
+        private WrapAxis yAxis = new()
         {
             enabled = true,
             offset = 0.5f,
-            minBound = -4.5f,
-            maxBound = 4.5f
+            boundRange = new(-5.5f, 5.5f)
         };
 
         private Camera mainCamera;
@@ -53,10 +52,9 @@ namespace Meangpu
                 enabled = false;
                 return;
             }
-
-            if (TryGetComponent(out SpriteRenderer sprite))
+            if (_objectSize != null)
             {
-                objectSize = sprite.bounds.size;
+                objectSize = _objectSize.bounds.size;
             }
             else
             {
@@ -77,10 +75,10 @@ namespace Meangpu
             );
 
             // Update bounds based on screen size
-            xAxis.minBound = -screenBounds.x;
-            xAxis.maxBound = screenBounds.x;
-            yAxis.minBound = -screenBounds.y;
-            yAxis.maxBound = screenBounds.y;
+            xAxis.boundRange.Minimum = -screenBounds.x;
+            xAxis.boundRange.Maximum = screenBounds.x;
+            yAxis.boundRange.Minimum = -screenBounds.y;
+            yAxis.boundRange.Maximum = screenBounds.y;
         }
 
         private void LateUpdate()
@@ -97,14 +95,14 @@ namespace Meangpu
             if (xAxis.enabled)
             {
                 float halfWidth = objectSize.x * 0.5f;
-                if (transform.position.x > xAxis.maxBound + xAxis.offset + halfWidth)
+                if (transform.position.x > xAxis.boundRange.Maximum + xAxis.offset + halfWidth)
                 {
-                    newPosition.x = xAxis.minBound - xAxis.offset;
+                    newPosition.x = xAxis.boundRange.Minimum - xAxis.offset;
                     positionChanged = true;
                 }
-                else if (transform.position.x < xAxis.minBound - xAxis.offset - halfWidth)
+                else if (transform.position.x < xAxis.boundRange.Minimum - xAxis.offset - halfWidth)
                 {
-                    newPosition.x = xAxis.maxBound + xAxis.offset;
+                    newPosition.x = xAxis.boundRange.Maximum + xAxis.offset;
                     positionChanged = true;
                 }
             }
@@ -112,14 +110,14 @@ namespace Meangpu
             if (yAxis.enabled)
             {
                 float halfHeight = objectSize.y * 0.5f;
-                if (transform.position.y > yAxis.maxBound + yAxis.offset + halfHeight)
+                if (transform.position.y > yAxis.boundRange.Maximum + yAxis.offset + halfHeight)
                 {
-                    newPosition.y = yAxis.minBound - yAxis.offset;
+                    newPosition.y = yAxis.boundRange.Minimum - yAxis.offset;
                     positionChanged = true;
                 }
-                else if (transform.position.y < yAxis.minBound - yAxis.offset - halfHeight)
+                else if (transform.position.y < yAxis.boundRange.Minimum - yAxis.offset - halfHeight)
                 {
-                    newPosition.y = yAxis.maxBound + yAxis.offset;
+                    newPosition.y = yAxis.boundRange.Maximum + yAxis.offset;
                     positionChanged = true;
                 }
             }
@@ -137,15 +135,15 @@ namespace Meangpu
             if (xAxis.enabled)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(new Vector3(xAxis.minBound, -10, 0), new Vector3(xAxis.minBound, 10, 0));
-                Gizmos.DrawLine(new Vector3(xAxis.maxBound, -10, 0), new Vector3(xAxis.maxBound, 10, 0));
+                Gizmos.DrawLine(new Vector3(xAxis.boundRange.Minimum, -10, 0), new Vector3(xAxis.boundRange.Minimum, 10, 0));
+                Gizmos.DrawLine(new Vector3(xAxis.boundRange.Maximum, -10, 0), new Vector3(xAxis.boundRange.Maximum, 10, 0));
             }
 
             if (yAxis.enabled)
             {
                 Gizmos.color = Color.cyan;
-                Gizmos.DrawLine(new Vector3(-10, yAxis.minBound, 0), new Vector3(10, yAxis.minBound, 0));
-                Gizmos.DrawLine(new Vector3(-10, yAxis.maxBound, 0), new Vector3(10, yAxis.maxBound, 0));
+                Gizmos.DrawLine(new Vector3(-10, yAxis.boundRange.Minimum, 0), new Vector3(10, yAxis.boundRange.Minimum, 0));
+                Gizmos.DrawLine(new Vector3(-10, yAxis.boundRange.Maximum, 0), new Vector3(10, yAxis.boundRange.Maximum, 0));
             }
         }
     }
